@@ -1,0 +1,65 @@
+plugins {
+    id 'java'
+    id 'antlr'
+    id "org.jetbrains.kotlin.jvm" version "1.3.60"
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation fileTree(dir: 'lib', include: '*.jar')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    antlr 'org.antlr:antlr4:4.7.1'
+    implementation 'org.antlr:antlr4:4.7.1'
+    implementation 'org.mapdb:mapdb:3.0.5'
+    implementation 'com.github.holgerbrandl:krangl:0.11'
+    implementation 'org.jsoup:jsoup:1.12.1'
+    implementation 'org.knowm.xchart:xchart:3.6.0'
+
+}
+
+task grun(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'org.antlr.v4.gui.TestRig'
+    args "Dart2", "libraryDefinition", "-gui",
+    "./files-to-process/89a99715-19af-4e5d-a51a-c5a98a42b292.dart"
+    // "./src/main/resources/dart/counter_app.dart"
+}
+
+
+
+generateGrammarSource {
+    maxHeapSize = "64m"
+
+    // Keep a copy of generated sources
+    doLast {
+        println "Copying generated grammar lexer/parser files to main directory."
+
+    }
+}
+
+clean.doLast {
+    file('generated-src').deleteDir()
+}
+
+
+
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+version = '1.2.1'
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
