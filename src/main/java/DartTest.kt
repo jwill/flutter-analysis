@@ -122,7 +122,6 @@ fun normalizeRows(collection: IndexTreeList<Any?>): DataFrame {
         for (key in row.keys) {
             rowClone.put(key, row[key])
         }
-        println(rowClone)
         newCollection.add(rowClone)
     }
     return dataFrameOf(newCollection)
@@ -130,17 +129,10 @@ fun normalizeRows(collection: IndexTreeList<Any?>): DataFrame {
 
 fun getNonNullForDataFrame(dataFrame: DataFrame): DataFrame {
     val nonNullColumns = mutableSetOf<String>()
-
     for (col in dataFrame.cols) {
-        var columnIsUsed = false
-        for (row in dataFrame.rows) {
-
-            if (row.get(col.name) != "") {
-                columnIsUsed = true
-                nonNullColumns.add(col.name)
-                continue
-            }
-        }
+        val f = col.values().filterNot { (it as String).equals("") }
+        if (f.size > 0)
+            nonNullColumns.add(col.name)
     }
 
     return dataFrame.select(nonNullColumns)
@@ -220,7 +212,7 @@ fun checkForFirstRun() {
     // If either file doesn't exist then generate them
     if (!widgetFile.exists() || !recordFile.exists() || filesToProcess > 0) {
         // First run
-        val db = DBMaker.fileDB("testMapDB.db").make()
+        val db = DBMaker.fileDB("mapDB.db").make()
         if (!widgetFile.exists()) {
             val widgetCollection = db.indexTreeList("widgetList").createOrOpen()
             getMaterialClasses(widgetCollection)
@@ -267,18 +259,11 @@ fun main(args: Array<String>) {
 
     var result = DataFrame.readCSV(File("cleaned-data.csv"))
 
-   // println(getSubDataFrame(df, "Text"))
-
-
-
-    //println(df2)
-
-
     // Remove properties that were culled with the non-Material stuff
-    //result = getNonNullForDataFrame(result)
+    result = getNonNullForDataFrame(result)
 
-    //println(df)
     println(result)
+
 
     // Count frequency of elements
     val f = result.groupBy("idName").count().sortedByDescending("n").take(10)
@@ -323,15 +308,12 @@ fun createPropertiesDataFrame(idName: String, sourceDataFrame: DataFrame) : Data
     val rows = mutableListOf<DataFrameRow>()
     for (col in dataFrame.cols) {
         val row = mutableMapOf<String, Any?>()
-        row["propertyName"] = col.name
-        var count = 0;
-        col.values().forEach {
-            if ((it as String).equals("1"))
-                count++
-        }
-        row["count"] = count
-        if (count > 0)
+        val count = col.values().filter { (it as String).equals("1") }.count()
+        if (count > 0) {
+            row["propertyName"] = col.name
+            row["count"] = count
             rows.add(row)
+        }
     }
     return dataFrameOf(rows)
 }

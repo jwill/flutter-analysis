@@ -3,11 +3,6 @@
 import net.lingala.zip4j.*
 import net.lingala.zip4j.model.*
 import org.apache.commons.io.*
-@Grapes([
-        @Grab(group='net.lingala.zip4j', module='zip4j', version='2.2.6'),
-        @Grab(group='commons-io', module='commons-io', version='2.6')
-])
-import org.apache.commons.io.*
 
 void extractDartFiles (String FILE_URL) {
     def FILE_NAME = "../../../temp.zip"
@@ -27,7 +22,7 @@ void extractDartFiles (String FILE_URL) {
     List<FileHeader> fileHeaders = zipFile.getFileHeaders();
     // Filter to only Dart files
     fileHeaders.stream().filter{header -> header.getFileName().contains("dart") }.forEach{
-        zipFile.extractFile(it.getFileName(), '../../../files-to-process', UUID.randomUUID().toString()+".dart")
+        zipFile.extractFile(it.getFileName(), './files-to-process', UUID.randomUUID().toString()+".dart")
 
     }
 
@@ -37,12 +32,14 @@ String formatZipUrl(String first, String second) {
     return "https://github.com/${first}/${second}/archive/master.zip"
 }
 
-
-
-public static main(String[] args) {
+static main(String[] args) {
     println(new File(".").canonicalPath)
-    def repoList = new File("../../../repoList.csv").eachLine {
-        def components = it.split(",")
+    def lines = new File("repoList.csv").readLines()
+    def limit = args.length > 0 ? Integer.parseInt(args[0]) : lines.size()
+
+    for (i in 0..<limit) {
+        println i
+        def components = lines[i].split(",")
         extractDartFiles(formatZipUrl(components[0], components[1]))
     }
 }
