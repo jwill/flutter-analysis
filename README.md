@@ -44,11 +44,14 @@ More examples on the [krangl Github](https://github.com/holgerbrandl/krangl/blob
 You can add new files in a couple ways.
 
 1. Drop the dart files in the `files-to-process` directory.
+
 **OR**
+
 2. Add a new row to the repoList.csv file in the form of ```githubID,projectID```.
 3. Run ```gradlew downloadAndExtractProject``` to extract and anonymize the dart files.
 
 After either option you must run
+
 4. Delete ```cleaned-data.csv```. 
 
 On the next run it will add your new files to the database and generate a (somewhat) cleaned CSV of them.
