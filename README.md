@@ -19,6 +19,13 @@ krangl has a [10 minute start guide here](https://krangl.gitbook.io/docs/getting
 The default is to always read from CSV files for portability and query speed. In addition to the CSVs, all the data is stored in its most raw 
 form as a MapDB database. MapDB collections can be used like normal Java Collections but back their data to disk.
 
+## The Data
+The projects were a sample from those listed on [https://github.com/tortuvshin/open-source-flutter-apps](https://github.com/tortuvshin/open-source-flutter-apps).
+
+The exact projects are listed in this file in the form of username, projectID: https://github.com/jwill/flutter-analysis/blob/master/repoList.csv
+
+There are also a few of the Flutter team's samples, those are [here](https://github.com/jwill/flutter-analysis/tree/master/files-to-process).
+
 ## Example Queries
 
 ```getSubDataFrame(dataFrame, idName)``` returns a DataFrame consisting of rows with that Widget id. 
@@ -37,9 +44,12 @@ More examples on the [krangl Github](https://github.com/holgerbrandl/krangl/blob
 You can add new files in a couple ways.
 
 1. Drop the dart files in the `files-to-process` directory.
+**OR**
 2. Add a new row to the repoList.csv file in the form of ```githubID,projectID```.
-3. Delete ```cleaned-data.csv```. 
-4. Run ```gradlew downloadAndExtractProject```
+3. Run ```gradlew downloadAndExtractProject``` to extract and anonymize the dart files.
+
+After either option you must run
+4. Delete ```cleaned-data.csv```. 
 
 On the next run it will add your new files to the database and generate a (somewhat) cleaned CSV of them.
 
